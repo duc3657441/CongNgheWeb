@@ -10,9 +10,9 @@ def connect():
     try:
         conn = psycopg2.connect(
                                 host = 'localhost',
-                                database = 'ViDu',
+                                database = 'postgres',
                                 user = 'postgres',
-                                password = '159357',
+                                password = 'Thao1234',
                                 port = '5432')
         cur = conn.cursor()
         print("Successfully connected")
@@ -28,7 +28,7 @@ def main():
     f = open("books.csv", "r")  # needs to be opened during reading csv
     reader = csv.reader(f)
     cur.execute("""
-                    SET search_path TO public;
+                    set schema 'public';
                     """)
     next(reader)
     for isbn, title, author, year in reader:
