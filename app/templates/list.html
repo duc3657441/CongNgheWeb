@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <table class="table .list">
+      <thead>
+        <tr>
+          <th scope="col">ISBN</th>
+          <th scope="col">Title</th>
+          <th scope="col">Author</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in result%}
+        <!-- <tr>
+          <td>{{item}}</td>
+          <td>{{item.title}}</td>
+          <td>{{item.author}}</td>
+          <td><a href= "details/{{item.bookid}}">Details</a></td>
+        </tr> -->
+        <tr>
+            <td>{{item[0]}}</td>
+            <td>{{item[1]}}</td>
+            <td>{{item[2]}}</td>
+            <td>{{item[3]}}</td>
+            <td><a href="#">Details</a></td>
+        </tr>
+        {% endfor %}
+        
+      </tbody>
+      </table>
+    </div>
+    
+{% endblock %}
+
+    </div>
+    <div class="col-md-6 col-sm-0">
+
+    </div>
+  </div>

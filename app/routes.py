@@ -78,7 +78,7 @@ def login():
             cur.execute(query,  value)
             Q = cur.fetchone()
             # return render_template("temp.html",taiKhoan = Q[3], matKhau = Q[4])
-           
+            conn.close()
         except Exception as e:
             return render_template("error.html", message=e)
 
@@ -102,20 +102,27 @@ def login():
 
 @app.route("/search", methods=["GET","POST"])
 def search():
-    return render_template("search.html")
-# @app.route("/login", methods=["GET", "POST"])
-# def login():
-#     return render_template('login.html')
+    # return render_template("search.html")
+    if request.method == "GET":
+        return render_template("search.html")
+    else:
+        query = request.form.get("input-search")
+        if query is None:
+            return render_template("error.html", message="Search field can not be empty!")
+        try:
+            conn,cur = connect()
+            querySQL = "SELECT isbn, title, author, bookid FROM books WHERE LOWER(isbn) LIKE %s OR LOWER(title) LIKE %s OR LOWER(author) LIKE %s"
+            value = "%" + query.lower() + "%"
+            valueSQL = (value,value,value)
+            # result = db.execute("SELECT * FROM books WHERE LOWER(isbn) LIKE :query OR LOWER(title) LIKE :query OR LOWER(author) LIKE :query", {"query": "%" + query.lower() + "%"}).fetchall()
+            cur.execute(querySQL,valueSQL)
+            result = cur.fetchall()
+            conn.close()
+        except Exception as e:
+            return render_template("error.html", message=e)
+        if not result:
+            return render_template("error.html", message="Your query did not match any documents")
+        return render_template("list.html", result = result)
+        
+       
 
-
-# @app.route("/register", methods=["GET", "POST"])
-# def register():
-#     return 'đây là trang register'
-
-# @app.route("/logout")
-# def logout():
-#     return redirect(url_for("index"))
-
-# @app.route("/search", methods=["GET","POST"])
-# def search():
-#     return 'đây là trang search'
