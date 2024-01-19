@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error
+{% endblock %}
+
+{% block content %}
+  
+<div class="alert alert-danger" role="alert">
+    <p>{{message}}</p>
+</div>
+<a class="btn btn-primary ml-3" href="javascript:history.back()" role="button">Go Back</a>
+
+{% endblock %}
