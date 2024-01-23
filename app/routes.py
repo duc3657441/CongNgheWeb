@@ -1,5 +1,5 @@
 import requests
-from flask import render_template, redirect,url_for, request, session
+from flask import render_template, redirect,url_for, request, session, jsonify
 from app.connect import connect
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app 
@@ -162,6 +162,8 @@ def details(bookid):
         
         try:
             googleapis = requests.get(f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&key={key}")
+            googleapis_book = googleapis.json()["items"][0]
+            googleapis_volumeInfo = googleapis_book["volumeInfo"]
         except Exception as e:
             return render_template("error.html", message = e)
         
@@ -180,25 +182,71 @@ def details(bookid):
         if comment_list is None:
             return render_template("error.html", message="Invalid book id")
         
-        return render_template("details.html", result=result, comment_list=comment_list , bookid=bookid, googleapis=googleapis.json()["items"][0])
+        return render_template("details.html", result=result, comment_list=comment_list , bookid=bookid, googleapis=googleapis_volumeInfo)
     
-    # else:
-    #     ######## Check if the user commented on this particular book before ###########
-    #     conn,cur = connect()
-    #     querySQL = "SELECT * from reviews WHERE user_id = %s AND book_id = %s"
-    #     value = (session["user_id"], bookid)
-    #     cur.execute(querySQL,value)
-    #     user_reviewed_before = cur.fetchone()
-    #     conn.close()
+    else:
+        ######## Check if the user commented on this particular book before ###########
+        conn,cur = connect()
+        querySQL = "SELECT * from reviews WHERE user_id = %s AND book_id = %s"
+        value = (session["user_id"], bookid)
+        cur.execute(querySQL,value)
+        user_reviewed_before = cur.fetchone()
+        conn.close()
 
-    #     if user_reviewed_before:
-    #         return render_template("error.html", message = "You reviewed this book before!")
+        if user_reviewed_before:
+            return render_template("error.html", message = "You reviewed this book before!")
         
-    #     ######## Proceed to get user comment ###########
-    #     user_comment = request.form.get("comments")
-    #     user_rating = request.form.get("rating")
+        ######## Proceed to get user comment ###########
+        user_comment = request.form.get("comments")
+        user_rating = request.form.get("rating")
 
-    #     if not user_comment:
-    #         return render_template("error.html", message="Comment section cannot be empty")
+        if not user_comment:
+            return render_template("error.html", message="Comment section cannot be empty")
 
-         
+        # try to commit to database, raise error if any
+        try:
+            conn,cur = connect()
+            querySQL = "INSERT INTO reviews (user_id, book_id, rating, comment) VALUES (%s, %s, %s, %s)"
+            value = (session["user_id"], bookid, user_rating, user_comment)
+            cur.execute(querySQL,value)
+        except Exception as e:
+            return render_template("error.html", message=e)
+        
+        conn.commit()
+        conn.close()
+        #success - redirect to details page
+        return redirect(url_for("details", bookid=bookid))
+    
+
+@app.route("/api/<string:isbn>")
+
+def api(isbn):
+    """Return details about a single book in json format"""
+
+    # Make sure ISBN exists in the database
+    try:
+        conn,cur = connect()
+        querySQL = "SELECT title,author, year, isbn from books WHERE isbn = %s"
+        value = (isbn,)
+        cur.execute(querySQL,value)
+        book = cur.fetchone()
+        conn.close()
+    except Exception as e:
+        return render_template("error.html", message=e)
+    
+    if book is None:
+        return jsonify({"error": "Not Found"}), 404
+    
+    # Get googleapis API data
+    googleapis = requests.get(f"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&key={key}")
+    googleapis_book = googleapis.json()["items"][0]
+    googleapis_volumeInfo = googleapis_book["volumeInfo"]
+
+    # Return book details in JSON
+    return jsonify({
+            "title": book[0],
+            "author": book[1],
+            "year": book[2],
+            "isbn": book[3],
+            "pageCount" : googleapis_volumeInfo["pageCount"]
+        })

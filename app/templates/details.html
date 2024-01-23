@@ -15,6 +15,7 @@
                   <p class="lead">Title: {{result[1]}}</p>
                   <p class="lead">Author: {{result[2]}}</p>
                   <p class="lead">Year: {{result[3]}}</p>
+                  <p class="lead">Page count: {{googleapis["pageCount"]}} </p>
                 </div>
               </div>
             </div>
@@ -23,10 +24,10 @@
               <div class="list-group">
                 <img src="../static/googlebooks.jpg" alt="googlebooks logo" class="img-fluid mb-3">
                 <button type="button" class="btn btn-secondary mb-3">
-                  Average Rating: <span class="badge badge-light"></span>
+                  Read<span class="badge badge-light"></span>
                 </button>
-                <button type="button" class="btn btn-secondary mb-3">
-                  # of Ratings: <span class="badge badge-light"></span>
+                <button type="button" class="btn btn-secondary mb-3 chinhTranRaNgoai" >
+                  Description <span class="badge badge-light"> </span>
                 </button>
               </div>
 
@@ -46,7 +47,7 @@
                 <span class="badge badge-danger float-right">rated {{item[3]}}</span>
               {% endif %}
             </h5>
-            <h6 class="card-subtitle mb-2 text-muted"><span class="badge">@{{item[2]}}</span></h6>
+            <h6 class="card-subtitle mb-2 text-muted"><span class="badge">{{item[2]}}</span></h6>
             <p class="card-text mt-3 alert alert-info">{{item[4]}}</p>
           </div>
           </div>
