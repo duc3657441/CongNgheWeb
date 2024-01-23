@@ -17,7 +17,7 @@ Make sure you have the following installed on your machine:
 4. 
 5. Set the environment variables:
 	  * `export FLASK_APP=application.py`. On Windows, the command is instead` set FLASK_APP=application.py`
-    In the file with the path ..\app\connect.py, please customize for your local PostgreSQL database.
+    	  * In the file with the path ..\app\connect.py, please customize for your local PostgreSQL database.
 6. Run `tables.sql` against your database to create the necessary tables
   ![Alt text](db-schema.png?raw=true "Title")
 7. Run `python3 import.py` to import a spreadsheet in CSV format of 5000 different books to your database
