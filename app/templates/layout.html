@@ -14,17 +14,16 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
-            
               <div class="collapse navbar-collapse" id="#navbarNav">
                 <ul class="navbar-nav ml-auto nav-item">
                     <li class="active">
                         <h6 class="nav-link">Welcome</h6>
                     </li>
                     <li >
-                        <a class="btn btn-outline-light btn-success mr-2" href="#" role="button">Search</a>
+                        <a class="btn btn-outline-light btn-success mr-2" href="{{url_for('search')}}" role="button">Search</a>
                     </li>
                     <li>
-                        <a href=""><button class="btn btn-outline-light float-right" type="submit">Logout</button></a>
+                        <a href="{{url_for('logout')}}"><button class="btn btn-outline-light float-right" type="submit">Logout</button></a>
                     </li>
                     <li>
                         <a href="{{url_for('register')}}"><button class="btn btn-outline-light" type="submit">Sign Up</button></a>

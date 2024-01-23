@@ -1,5 +1,5 @@
 __pycache__/
 venv/
 app/__pycache__/
-app/templates/details.html
 test.py
+flask_session/

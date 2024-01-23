@@ -16,7 +16,6 @@ def connect():
         print('error: ', error)
 
     return conn,cur
-
 # conn, cur = connect()
 # form_email = str('nguyendinhduc@gmail.com')
 # try: 
